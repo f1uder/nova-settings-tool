@@ -2,7 +2,7 @@
 use Spatie\Valuestore\Valuestore;
 use Illuminate\Support\Facades\Storage;
 
-if(!function_exists('get_store_config_panels'))
+if (!function_exists('get_store_config_panels'))
 {
     $loaded_panels = null;
 
@@ -14,7 +14,7 @@ if(!function_exists('get_store_config_panels'))
     function get_store_config_panels()
     {
         global $loaded_panels;
-        if($loaded_panels){
+        if ($loaded_panels) {
             return $loaded_panels;
         }
 
@@ -27,11 +27,11 @@ if(!function_exists('get_store_config_panels'))
                 $field->panel = $panel['name'];
 
                 // Set a default value else the code field will make a split error.
-                if($field->component == 'code-field'){
+                if ($field->component == 'code-field') {
                     if(!$field->value) $field->value = '';
                 }
 
-                if($field->component == 'key-value-field' && $field->value && is_string($field->value)){
+                if ($field->component == 'key-value-field' && $field->value && is_string($field->value)) {
                     $field->value = json_decode($field->value);
                 }
 
@@ -41,9 +41,9 @@ if(!function_exists('get_store_config_panels'))
                 }
 
                 return $field;
-            },array_filter(
+            }, array_filter(
                 is_array($panel['fields']) ? $panel['fields'] : $panel['fields'](request()),
-                function($field){
+                function ($field) {
                     return true;
                 }
             ));
@@ -53,7 +53,8 @@ if(!function_exists('get_store_config_panels'))
         return $loaded_panels;
     }
 }
-if(!function_exists('get_store_config_fields'))
+
+if (!function_exists('get_store_config_fields'))
 {
     $loaded_fields = null;
 
@@ -78,7 +79,7 @@ if(!function_exists('get_store_config_fields'))
     }
 }
 
-if(!function_exists('get_store_config_field'))
+if (!function_exists('get_store_config_field'))
 {
     /**
      * Get store config field by the attribute.
@@ -95,7 +96,7 @@ if(!function_exists('get_store_config_field'))
     }
 }
 
-if(!function_exists('get_store_config'))
+if (!function_exists('get_store_config'))
 {
     /**
      * Get store config value
@@ -110,22 +111,24 @@ if(!function_exists('get_store_config'))
         $config_value = $config_store->get($key);
         $field = get_store_config_field($key);
 
-        if($field->component == 'file-field'){
-            $config_value = Storage::disk($field->getStorageDisk())->url($config_value);
-        } else {
-            $temp_object = (object)[
-                $key => $config_value
-            ];
+        if ($field) {
+            if ($field->component == 'file-field') {
+                $config_value = Storage::disk($field->getStorageDisk())->url($config_value);
+            } else {
+                $temp_object = (object)[
+                    $key => $config_value
+                ];
 
-            $field->resolveForDisplay($temp_object, $key);
-            $config_value = $field->value;
+                $field->resolveForDisplay($temp_object, $key);
+                $config_value = $field->value;
+            }
         }
 
         return $config_value;
     }
 }
 
-if(!function_exists('get_store_configs'))
+if (!function_exists('get_store_configs'))
 {
     /**
      * Get store configs value
@@ -138,7 +141,7 @@ if(!function_exists('get_store_configs'))
     {
         $values = [];
 
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $values[$key] = get_store_config($key);
         }
 
