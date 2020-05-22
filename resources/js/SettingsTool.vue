@@ -11,6 +11,7 @@
                 v-bind="params"
                 :panels="panels"
                 :saving="saving"
+                :errors="errors"
                 @update-last-retrieved-at-timestamp="
                     updateLastRetrievedAtTimestamp
                 "
@@ -32,6 +33,7 @@
 <script>
 import SettingsToolDefault from "./SettingsToolDefault";
 import SettingsToolAccordion from "./SettingsToolAccordion";
+import { Errors } from './errors';
 
 export default {
     components: {
@@ -43,11 +45,13 @@ export default {
         loaded: false,
         params: {},
         visualized: "stacked",
-        panels: []
+        panels: [],
+        errors: {},
     }),
 
     mounted() {
         this.getFields();
+        this.errors = new Errors();
     },
 
     computed: {
@@ -140,12 +144,14 @@ export default {
                         });
 
                         this.getFields();
+                        this.errors = new Errors();
                     })
                     .catch(error => {
                         this.saving = false;
                         console.log(error.response);
 
                         if (error.response.status == 422) {
+                            this.errors = new Errors(error.response.data.errors);
                             Nova.error(
                                 this.__(
                                     "There was a problem submitting the form."

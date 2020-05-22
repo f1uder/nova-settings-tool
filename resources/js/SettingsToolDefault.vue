@@ -8,6 +8,7 @@
                 :panel="panel"
                 :name="panel.name"
                 :fields="panel.fields"
+                :validationErrors="errors"
                 mode="form"
                 class="mb-8"
             />
@@ -28,7 +29,8 @@ export default {
     components: { DetailFieldsArea },
 
     props: {
-        panels: Array
+        panels: Array,
+        errors: Object,
     }
 };
 </script>
